@@ -465,6 +465,8 @@ var/global/shutdown_processed = FALSE
 
 	var/list/features = list()
 
+	features += "(18+) ERP allowed"
+
 	if(SSticker)
 		if(master_mode)
 			features += master_mode
