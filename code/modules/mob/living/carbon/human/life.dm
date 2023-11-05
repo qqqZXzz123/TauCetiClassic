@@ -435,9 +435,11 @@ var/global/list/tourette_bad_words= list(
 			//Body temperature adjusts depending on surrounding atmosphere based on your thermal protection
 			adjust_bodytemperature(affecting_temp, use_insulation = TRUE, use_steps = TRUE)
 
-	else if(!species.flags[IS_SYNTHETIC] && !species.flags[RAD_IMMUNE])
+	else if(!species.flags[IS_SYNTHETIC] && !species.flags[RAD_IMMUNE] && isspaceturf(get_turf(src)))
 		if(istype(loc, /obj/mecha) || istype(loc, /obj/structure/transit_tube_pod))
 			return
+		if(HAS_ROUND_ASPECT(ROUND_ASPECT_HIGH_SPACE_RADIATION))
+			irradiate_one_mob(src, 5)
 		if(!(istype(head, /obj/item/clothing/head/helmet/space) && istype(wear_suit, /obj/item/clothing/suit/space)) && radiation < 100)
 			irradiate_one_mob(src, 5)
 
@@ -812,7 +814,9 @@ var/global/list/tourette_bad_words= list(
 
 
 		//Eyes
-		if(sdisabilities & BLIND || HAS_TRAIT(src, TRAIT_BLIND))	//disabled-blind, doesn't get better on its own
+		if(should_have_organ(O_EYES) && !has_organ(O_EYES))
+			blinded = 1
+		else if(sdisabilities & BLIND || HAS_TRAIT(src, TRAIT_BLIND))	//disabled-blind, doesn't get better on its own
 			blinded = 1
 		else if(eye_blind)			//blindness, heals slowly over time
 			eye_blind = max(eye_blind-1,0)
